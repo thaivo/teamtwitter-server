@@ -55,35 +55,26 @@ public class SongService implements RemoteService {
     public void someRemoteMethod() throws RemoteServiceException {
         HttpSession session = _env.getRequest().getSession();
     }
-    //@Transactional
-	public String insertSong(HashMap<String, String> input) throws RemoteServiceException {
-		String ret = "";
+    @Transactional(readOnly=false)
+	public Boolean insertSong(HashMap<String, String> input) throws RemoteServiceException {
+		Boolean ret = Boolean.FALSE;
 		try {
 			 Resource r=new ClassPathResource("applicationContext.xml");  
 			    BeanFactory factory=new XmlBeanFactory(r);  
 			      
 			    this.songDao=factory.getBean(SongDaoImpl.class);
-			    //HibernateTransactionManager htx = (HibernateTransactionManager) factory.getBean("transactionManager");
-			    
-			    
-			    System.out.print("before input.getString(\"name\") \n");
 			    //System.out.print(arr);
 			    String nameOfSong = input.get("name");
 			    System.out.print(nameOfSong);
-			    System.out.print("\nbefore input.getString(\"author\") \n");
 			    String author =input.get("author");
 			    System.out.print(nameOfSong);
-			    //this.songDao.setTransactionManager(htx);
 			    Song song = new Song(nameOfSong, author);
-			    //Song song = new Song(new String("123"), new String("thai123"));
-			    System.out.print("\nbefore call saveMusic ");
+
 			    if(this.songDao == null) System.out.print("this.songDao is null");
 			    this.songDao.saveMusic(song);
 			    
 			    
-			    ArrayList<Song> song1 = this.songDao.getSongs();
-			    ret = "inserted Song: " + song1.get(0).getName() + " by " + song1.get(0).getAuthor();
-			    ret += "\n" +"number songs :" + song1.size();
+			    ret = Boolean.TRUE;
 			//if (input.equals("Hi there!"))
 			Thread.sleep(5000);
 		} catch (InterruptedException e) {
@@ -116,30 +107,36 @@ public class SongService implements RemoteService {
 		return ret;
 		
 	}
-	
-	/*public HashMap<String, ArrayList<HashMap<String, String>>> loadAllSongs() throws RemoteServiceException{
-		Resource r=new ClassPathResource("applicationContext.xml");  
-	    BeanFactory factory=new XmlBeanFactory(r);  
-	      
-	    this.songDao=factory.getBean(SongDaoImpl.class);
-	    
-	    ArrayList<Song> songs = this.songDao.getSongs();
-	    //ArrayList<HashMap<String, String>> ret = new ArrayList<HashMap<String,String>>();
-	    ArrayList<HashMap<String, String>> listSongs = new ArrayList<HashMap<String, String>>();
-	    HashMap<String, ArrayList<HashMap<String, String>>> ret = new HashMap<String, ArrayList<HashMap<String, String>>>();
-	    for(int index = 0; index < songs.size(); index++) {
-	    	HashMap<String, String> songInfo = new HashMap<String, String>();
-	    	//JSONObject songInfo = new JSONObject();
-	    	Song song = songs.get(index);
-	    	songInfo.put("id", String.valueOf(song.getId()));
-	    	songInfo.put("name", song.getName());
-	    	songInfo.put("author", song.getAuthor());
-	    	listSongs.add(songInfo);
-	    }
-	    ret.put("songs",listSongs);
-		return ret;
-		
-	}*/
+
+	public Boolean deleteSong(HashMap<String, String> song) throws RemoteServiceException{
+		Boolean ret = Boolean.FALSE;
+		try {
+			 Resource r=new ClassPathResource("applicationContext.xml");  
+			    BeanFactory factory=new XmlBeanFactory(r);
+			    this.songDao=factory.getBean(SongDaoImpl.class);
+
+			    String nameOfSong = song.get("name");
+			    System.out.print(nameOfSong);
+			    String author =song.get("author");
+			    System.out.print(nameOfSong);
+			    String id =song.get("id");
+			    
+			    Song deletedSong = new Song(nameOfSong, author);
+			     
+			    deletedSong.setId(Integer.parseInt(id));
+			    if(this.songDao == null) System.out.print("this.songDao is null");
+			    this.songDao.deleteMusic(deletedSong);
+			    
+			    
+			    ret = Boolean.TRUE;
+			//if (input.equals("Hi there!"))
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return  ret;
+	}
 
 	public SongDao getSongDao() {
 		return songDao;

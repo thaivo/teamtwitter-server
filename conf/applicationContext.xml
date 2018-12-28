@@ -53,36 +53,37 @@
 		<property name="template" ref="template"></property>
 	</bean>
 	-->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
 	<bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager" p:sessionFactory-ref="mysessionFactory">  
         </bean>  
-    <!--<tx:annotation-driven/> -->
-	<!--
-    <tx:advice id="txAdviceHibernate" transaction-manager="transactionManager">  
-       <tx:attributes>  -->
-         <!-- <tx:method name="delete*" propagation="REQUIRED" />  
-        <tx:method name="update*" propagation="REQUIRED" />  
-        <tx:method name="save*" propagation="REQUIRED" /> 
-		<tx:method name="*" read-only="true" />  
-		-->
-		<!--<tx:method name="get*" read-only="true" isolation="READ_COMMITTED"/>
-		<tx:method name="*" propagation="REQUIRED" isolation="DEFAULT" read-only="false" timeout="-1" />
-		
-        
-        </tx:attributes>  
+    
+	
+    <!--  <tx:advice id="txAdviceHibernate" transaction-manager="transactionManager">  
+       <tx:attributes>  
+          <tx:method name="load*" read-only="true" />  
+        <tx:method name="get*"  read-only="true" />  
+        <tx:method name="retrieve*" read-only="true"/> 
+		<tx:method name="*" />  
+		</tx:attributes>  
     </tx:advice>  
-	-->
-    <!--<aop:config>  
-        <aop:pointcut id="serviceMethodsHibnerate" expression="execution(* com.musicmanager.dao.SongDao..*.*(..))"/>  
-        <aop:advisor advice-ref="txAdviceHibernate" pointcut-ref="serviceMethodsHibnerate" />  
+	
+    <aop:config>
+    
+
+        <aop:pointcut id="serviceMethodsHibnerate" expression="execution(* com.musicmanager.dao.impl.SongDaoImpl.*(..))"/>  
+         <aop:advisor advice-ref="txAdviceHibernate" pointcut-ref="serviceMethodsHibnerate" />
+
     </aop:config>  
-	-->
-	<!--<tx:annotation-driven transaction-manager="transactionManager" /> -->
+    -->
 	
 	<bean id="mySongDao" class="com.musicmanager.dao.impl.SongDaoImpl">
-		<!--<property name="sessionFactory" ref="mysessionFactory"></property>
-		<property name="transactionManager" ref="transactionManager"></property> -->
-		<property name="template" ref="template"></property>
+		  <property name="transactionManager" ref="transactionManager"></property>
+		<property name="sessionFactory" ref="mysessionFactory"></property>
+		 
+		<!--  <property name="hibernateTemplate" ref="template"></property>-->
 	</bean>
+	
+	
 	
 	<bean id="songService" class="com.musicmanager.service.SongService">
         <property name="songDao" ref="mySongDao"/>

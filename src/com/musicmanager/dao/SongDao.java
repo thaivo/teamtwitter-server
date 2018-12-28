@@ -11,26 +11,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.musicmanager.model.Song;
 
 
-public interface SongDao {
-	/*public void setFlushMode();
-
+public interface SongDao{
 	
-
-	public HibernateTemplate getTemplate(); 
-
-	public void setTemplate(HibernateTemplate template);
-
-	public HibernateTransactionManager getTransactionManager();
-
-	public void setTransactionManager(HibernateTransactionManager transactionManager);
-	*/ 
 	public void saveMusic(Song music);
 	
 	public void updateMusic(Song music);
 	
 	public void deleteMusic(Song music) ;
 	
-	public Song getById(int id);
+	public Song findSongById(int id);
 	
 	public ArrayList<Song> getSongs();
 }
